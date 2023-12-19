@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AccountController extends Controller
 {
@@ -11,10 +11,7 @@ class AccountController extends Controller
         return view('front.account.registration');
 
     }
-    // This method will show user registeraton page
-    public function login(){
 
-    }
     public function processRegistration(Request  $request)
     {
 $validator = validator::make($request->all(),[
@@ -24,14 +21,18 @@ $validator = validator::make($request->all(),[
     'confirm_password' => 'required',
 
 ]);
-if ($validator->passess()) {
-    # code...
-}else{
-return respnse()->json([
-    'status' => false,
-    'error' => $validator->errors()
-
-]);
+if ($validator->passes()) {
+    // Code for when validation passes...
+} else {
+    return response()->json([
+        'status' => false,
+        'error' => $validator->errors()
+    ]);
 }
     }
+    // This method will show user registeraton page
+    public function login(){
+
+    }
+
 }

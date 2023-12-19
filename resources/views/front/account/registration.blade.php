@@ -11,18 +11,22 @@
                         <div class="mb-3">
                             <label for="" class="mb-2">Name<span class="text-danger">*</span></label>
                             <input type="text" name="name" id="name" class="form-control" placeholder="Enter Name">
+                            <p></p>
                         </div>
                         <div class="mb-3">
                             <label for="" class="mb-2">Email<span class="text-danger">*</span></label>
                             <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email">
+                            <p></p>
                         </div>
                         <div class="mb-3">
                             <label for="" class="mb-2">Password<span class="text-danger">*</span></label>
                             <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password">
+                            <p></p>
                         </div>
                         <div class="mb-3">
                             <label for="" class="mb-2">Confirm Password<span class="text-danger">*</span></label>
                             <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Confirm Password">
+                            <p></p>
                         </div>
                         <button class="btn btn-primary mt-2">Register</button>
                     </form>
@@ -41,10 +45,18 @@
 e.preventDefault();
 $.ajax({
     url: '{{route("account.processRegistration")}}',
-    type: 'post',
+    method: 'POST',
     data: $("registrationForm").serializeArray(),
     dataType: 'json',
     success: function(response){
+        if (response.status == false) {
+            var errors = response.errors;
+            if (errors.name) {
+
+                $("#name").addClass('is_invalid').siblings('p').addClass('invalid-feedback').html(errors.name)
+            }
+
+        }
 
     }
 
