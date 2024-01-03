@@ -21,6 +21,7 @@ use App\Http\Controllers\AccountController;
 Route::get('/',[HomeController::class,'index'])->name('home');
 Route::get('account/register',[AccountController::class,'registration'])->name('account.registartion');
 Route::post('account/process-register',[AccountController::class,'processRegistration'])->name('account.processRegistration');
+Route::get('account/login','AccountController@login')->name('account.login');
 
 
 
