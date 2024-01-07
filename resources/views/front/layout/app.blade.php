@@ -9,7 +9,7 @@
 	<meta name="pinterest" content="nopin" />
     <meta name="csrf-token" content="{{csrf_token()}}" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('public') }}/assets/css/style.css" />
 	<!-- Fav Icon -->
 	<link rel="shortcut icon" type="image/x-icon" href="#" />
 </head>
@@ -30,7 +30,7 @@
 						<a class="nav-link" aria-current="page" href="jobs.html">Find Jobs</a>
 					</li>
 				</ul>
-				<a class="btn btn-outline-primary me-2" href="login.html" type="submit">Login</a>
+				<a class="btn btn-outline-primary me-2" href="{{route('account.login')}}" type="submit">Login</a>
 				<a class="btn btn-primary" href="post-job.html" type="submit">Post a Job</a>
 			</div>
 		</div>
@@ -67,14 +67,13 @@
     <p class="text-center text-white pt-3 fw-bold fs-6">© 2023 xyz company, all right reserved</p>
 </div>
 </footer>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-{{-- <script src="{{ asset('assets/js/jquery-3.6.0.min.js') }}"></script> --}}
-<script src="{{ asset('assets/js/bootstrap.bundle.5.1.3.min.js') }}"></script>
-<script src="{{ asset('assets/js/instantpages.5.1.0.min.js') }}"></script>
-<script src="{{ asset('assets/js/lazyload.17.6.0.min.js') }}"></script>
-<script src="{{ asset('assets/js/slick.min.js') }}"></script>
-<script src="{{ asset('assets/js/lightbox.min.js') }}"></script>
-<script src="{{ asset('assets/js/custom.js') }}"></script>
+<script src="{{ asset('public') }}/assets/js/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('public') }}/assets/js/bootstrap.bundle.5.1.3.min.js"></script>
+<script src="{{ asset('public') }}/assets/js/instantpages.5.1.0.min.js"></script>
+<script src="{{ asset('public') }}/assets/js/lazyload.17.6.0.min.js"></script>
+<script src="{{ asset('public') }}/assets/js/slick.min.js"></script>
+<script src="{{ asset('public') }}/assets/js/lightbox.min.js"></script>
+<script src="{{ asset('public') }}/assets/js/custom.js"></script>
 <script>
     $.ajaxSetup({
 	    headers: {
