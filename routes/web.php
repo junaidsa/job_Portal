@@ -17,10 +17,22 @@ use App\Http\Controllers\AccountController;
 
 // Route::get('/', function () {
 //     return view('welcome');
+//if user Logged in == No And it access Login Profile Page then profile page it wiil redirect to login page user  page.
 // });
 Route::get('/',[HomeController::class,'index'])->name('home');
-Route::get('/account/register',[AccountController::class,'registration'])->name('account.registartion');
-Route::post('/account/process-register',[AccountController::class,'processRegistration'])->name('account.processRegistration');
-Route::get('/account/login',[AccountController::class,'login'])->name('account.login');
-Route::post('/account/authenticate',[AccountController::class,'authenticate'])->name('account.authenticate');
-Route::get('/account/profile',[AccountController::class,'profile'])->name('account.profile');
+Route::prefix('account')->group(function () {
+    // Guest Router
+Route::group(['middleware' => 'guest'], function () {
+    Route::get('/register',[AccountController::class,'registration'])->name('account.registartion');
+    Route::post('/process-register',[AccountController::class,'processRegistration'])->name('account.processRegistration');
+    Route::get('/login',[AccountController::class,'login'])->name('account.login');
+    Route::post('/authenticate',[AccountController::class,'authenticate'])->name('account.authenticate');
+});
+// Authenticateded Router
+Route::group(['middleware' => 'auth'], function () {
+    Route::put('/update-profile',[AccountController::class,'updateProfile'])->name('account.updateProfile');
+    Route::get('/profile',[AccountController::class,'profile'])->name('account.profile');
+    Route::get('/logout', [AccountController::class, 'logout'])->name('account.logout');
+});
+});
+

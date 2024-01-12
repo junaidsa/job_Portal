@@ -74,7 +74,6 @@
             }else{
                 $("#password").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('')
             }
-            window.location.href = "/account/login";
             if (errors.confirm_password) {
                 $("#confirm_password").addClass('is-invalid').siblings('p').addClass('invalid-feedback').html(errors.confirm_password)
             }else{
@@ -83,10 +82,11 @@
 
             } else {
                 // Your success handling logic here
-        $("#name").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
-        $("#email").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
-        $("#password").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
-        $("#confirm_password").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                $("#name").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                $("#email").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                $("#password").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                $("#confirm_password").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                window.location.href = "/account/login";
             }
         },
         error: function(error) {

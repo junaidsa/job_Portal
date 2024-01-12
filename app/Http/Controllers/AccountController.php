@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -33,6 +34,10 @@ if($validator->passes()){
     $user->save();
      session()->flash('success','You have Register Successfully.');
     // dd('Registration successful');
+    return response()->json([
+        'status' => true,
+        'errors' => []
+    ]);
 
 } else{
     return response()->json([
@@ -58,6 +63,7 @@ if($validator->passes()){
             ->withInput($request->only('email'));
     }else{
 if(Auth::attempt(['email' => $email, 'password' => $password])){
+    return redirect()->route('account.profile');
 
 }else{
     return redirect()->route('account.login')->with('error','Invalid Credentials');
@@ -66,7 +72,63 @@ if(Auth::attempt(['email' => $email, 'password' => $password])){
 
 }
     public function profile(){
-        // return view('front.account.profile');
-        echo "Profile created";
+        $id = Auth::user()->id;
+        $user = User::find($id);
+        return view('front.account.profile',[
+            'user' => $user
+        ]);
     }
+    public function logout(){
+        Auth::logout();
+        return redirect()->route('account.login');
+    }
+
+    public function updateProfile(Request $request){
+        try {
+
+            $id = Auth::user()->id;
+            $validator = Validator::make($request->all(), [
+                'name' => 'required',
+                'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($id)],
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'errors' => $validator->errors(),
+                ],422);
+            }
+
+                $user = User::find($id);
+
+                if (!$user) {
+                    return response()->json([
+                        'status' => false,
+                        'errors' => ['User not found.'],
+                    ]);
+                }
+
+                $user->name = $request->name;
+                $user->email = $request->email;
+                $user->mobile = $request->mobile;
+                $user->designation = $request->designation;
+
+                $user->save();
+
+                session()->flash('success', 'Account Profile Updated Successfully');
+
+                return response()->json([
+                    'status' => true,
+                    'errors' => [],
+                ]);
+
+        } catch (\Exception $e) {
+            // Handle the exception as needed
+            return response()->json([
+                'status' => false,
+                'errors' => ['An error occurred while updating the user profile.'],
+            ]);
+        }
+
+        }
 }
