@@ -10,6 +10,9 @@
     <meta name="csrf-token" content="{{csrf_token()}}" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}" />
+    <!-- CDN link -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 	<!-- Fav Icon -->
 	<link rel="shortcut icon" type="image/x-icon" href="#" />
 </head>
@@ -52,10 +55,11 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form id="profilepicForm" name="profilepicForm" method="POST">
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Profile Image</label>
                 <input type="file" class="form-control" id="image"  name="image">
+                <p id="image-error" class="text-danger"></p>
             </div>
             <div class="d-flex justify-content-end">
                 <button type="submit" class="btn btn-primary mx-3">Update</button>
@@ -86,6 +90,42 @@
 	        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 	    }
 });
+$('#profilepicForm').submit(function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    $.ajax({
+        url: '{{ route("account.updateProfilepic") }}',
+        method: 'POST',
+        data: formData,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            console.log(response.status);
+            if (response.status == false) {
+                // Your error handling logic here
+                var errors = response.error;
+                if (errors.image) {
+                    $('#image-error').html(errors.image);
+                    // Fix the syntax error here
+                }
+            }else{
+                Swal.fire({
+  title: "Update Profile image!",
+  icon: "success",
+  showCancelButton: false,
+  confirmButtonText: "OK",
+}).then((result) => {
+  if (result.isConfirmed) {
+    // Reload the page
+    location.reload();
+  }
+});
+            }
+        }
+    });
+});
+
 </script>
 @yield('customJs')
 

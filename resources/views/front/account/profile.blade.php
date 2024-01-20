@@ -87,6 +87,18 @@ $("#updateForm").submit(function (e) {
                 $("#name").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
                 // Handle success
                 $("#email").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                // Customized alert with options
+                Swal.fire({
+  title: "Update Profile!",
+  icon: "success",
+  showCancelButton: false,
+  confirmButtonText: "OK",
+}).then((result) => {
+  if (result.isConfirmed) {
+    // Reload the page
+    location.reload();
+  }
+});
             } else {
                 // Your error handling logic here
                 var errors = response.errors;

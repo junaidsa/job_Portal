@@ -7,9 +7,13 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class AccountController extends Controller
 {
+
     // This method will show user registeraton page
     public function registration(){
         return view('front.account.registration');
@@ -129,6 +133,43 @@ if(Auth::attempt(['email' => $email, 'password' => $password])){
                 'errors' => ['An error occurred while updating the user profile.'],
             ]);
         }
+
+        }
+        public function updateProfilepic(Request $request){
+        $id = Auth::user()->id;
+            $validator = Validator::make($request->all(), [
+                'image' => 'required|mimes:jpeg,png,jpg',
+            ]);
+
+            if($validator->fails()){
+            return response()->json([
+            'status' => false,
+            'error' => $validator->errors()
+            ]);
+            }
+
+            $image = $request->image;
+            $imageName = $id.'-'.time().'.'.$image->getClientOriginalExtension();
+            $image->move(public_path('/profile_image/'),$imageName);
+
+
+          // Create the thumbnail
+// create a new image instance (800 x 600)
+$sourcePath = public_path('/profile_image/'.$imageName);
+$manager = new ImageManager(Driver::class);
+$image = $manager->read($sourcePath);
+// resize and fit the image to 200x200 maintaining the aspect ratio
+$image->cover(200, 200);
+$image->toPng()->save(public_path('/profile_image/thum/'.$imageName));
+File::delete(public_path('/profile_image/thum/'.Auth::user()->image));
+File::delete(public_path('/profile_image/'.Auth::user()->image));
+            $user = User::where('id',$id)->update(['image'=>$imageName]);
+            session()->flash('success', 'Account Profile image Updated Successfully');
+            return response()->json([
+              'status' => true,
+                'errors' => [],
+            ]);
+
 
         }
 }
