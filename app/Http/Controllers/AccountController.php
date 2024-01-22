@@ -169,7 +169,11 @@ File::delete(public_path('/profile_image/'.Auth::user()->image));
               'status' => true,
                 'errors' => [],
             ]);
+        }
 
+        public function createJob(){
+            return view('front.job.create');
 
         }
+
 }

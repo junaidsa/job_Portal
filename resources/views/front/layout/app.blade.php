@@ -77,6 +77,11 @@
     <p class="text-center text-white pt-3 fw-bold fs-6">© 2023 xyz company, all right reserved</p>
 </div>
 </footer>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
 <script src="{{ asset('assets/js/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ asset('assets/js/bootstrap.bundle.5.1.3.min.js') }}"></script>
 <script src="{{ asset('assets/js/instantpages.5.1.0.min.js')}}"></script>
@@ -110,17 +115,7 @@ $('#profilepicForm').submit(function(e) {
                     // Fix the syntax error here
                 }
             }else{
-                Swal.fire({
-  title: "Update Profile image!",
-  icon: "success",
-  showCancelButton: false,
-  confirmButtonText: "OK",
-}).then((result) => {
-  if (result.isConfirmed) {
-    // Reload the page
-    location.reload();
-  }
-});
+            location.reload();
             }
         }
     });
