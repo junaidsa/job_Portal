@@ -18,7 +18,7 @@
     </div>
     <div class="col-lg-9">
                 @include('front.message')
-         <form action="" method="post">
+         <form method="post" id="createjobForm">
                 <div class="card border-0 shadow mb-4 ">
                     <div class="card-body card-form p-4">
                         <h3 class="fs-4 mb-1">Job Details</h3>
@@ -26,32 +26,39 @@
                             <div class="col-md-6 mb-4">
                                 <label for="" class="mb-2">Title<span class="req">*</span></label>
                                 <input type="text" placeholder="Job Title" id="title" name="title" class="form-control">
+                                <p></p>
                             </div>
                             <div class="col-md-6  mb-4">
                                 <label for="" class="mb-2">Category<span class="req">*</span></label>
                                 <select name="category" id="category" class="form-control">
-                                    <option value="">Select a Category</option>
-                                    <option value="">Engineering</option>
-                                    <option value="">Accountant</option>
-                                    <option value="">Information Technology</option>
-                                    <option value="">Fashion designing</option>
+                                    <option disabled>Select a Category</option>
+                                    @if ($categories->count() > 0)
+                                    @foreach ($categories as $category)
+                                    <option value="{{$category->id}}">{{$category->name}}</option>
+                                    @endforeach
+                                    @endif
                                 </select>
+                                <p></p>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-4">
                                 <label for="" class="mb-2">Job Nature<span class="req">*</span></label>
-                                <select class="form-select">
-                                    <option>Full Time</option>
-                                    <option>Part Time</option>
-                                    <option>Remote</option>
-                                    <option>Freelance</option>
+                                <select class="form-select" id="jobType" name="jobType">
+                                    <option disabled>Select job</option>
+                                    @if ($jobTypes)
+                                    @foreach ($jobTypes as $jobType)
+                                    <option value="{{$jobType->id}}">{{$jobType->name}}</option>
+                                    @endforeach
+                                    @endif
                                 </select>
+                                <p></p>
                             </div>
                             <div class="col-md-6  mb-4">
                                 <label for="" class="mb-2">Vacancy<span class="req">*</span></label>
                                 <input type="number" min="1" placeholder="Vacancy" id="vacancy" name="vacancy" class="form-control">
+                                <p></p>
                             </div>
                         </div>
 
@@ -62,11 +69,10 @@
                             </div>
 
                             <div class="mb-4 col-md-6">
-                                <label for="" class="mb-2">Location<span class="req">*</span></label>
-                                <input type="text" placeholder="location" id="location" name="Location" class="form-control">
+                                <label for="" class="mb-2">Location <span class="req">*</span> </label>
+                                <input type="text" placeholder="location" id="location" name="location" class="form-control">
                             </div>
                         </div>
-
                         <div class="mb-4">
                             <label for="" class="mb-2">Description<span class="req">*</span></label>
                             <textarea class="form-control" name="description" id="description" cols="5" rows="5" placeholder="Description"></textarea>
@@ -80,14 +86,31 @@
                             <textarea class="form-control" name="responsibility" id="responsibility" cols="5" rows="5" placeholder="Responsibility"></textarea>
                         </div>
                         <div class="mb-4">
-                            <label for="" class="mb-2">Qualifications</label>
-                            <textarea class="form-control" name="qualifications" id="qualifications" cols="5" rows="5" placeholder="Qualifications"></textarea>
+                            <label  class="mb-2">Qualifications</label>
+                            <input type="text"  class="form-control" name="qualifications" id="qualifications" placeholder="Qualifications">
+                        </div>
+                        <div class="mb-4">
+                            <label for="" class="mb-2">Experience</label>
+                            <Select class="form-control" name="experience" id="experience">
+                            <option value="1">1 Year</option>
+                            <option value="2">2 Year</option>
+                            <option value="3">3 Year</option>
+                            <option value="4">4 Year</option>
+                            <option value="5">5 Year</option>
+                            <option value="6">6 Year</option>
+                            <option value="7">7 Year</option>
+                            <option value="8">8 Year</option>
+                            <option value="9">9 Year</option>
+                            <option value="10">10 Year</option>
+                            <option value="10_plus">10+ Year</option>
+                        </Select>
+
                         </div>
 
 
 
                         <div class="mb-4">
-                            <label for="" class="mb-2">Keywords<span class="req">*</span></label>
+                            <label for="" class="mb-2">Keywords</label>
                             <input type="text" placeholder="keywords" id="keywords" name="keywords" class="form-control">
                         </div>
 
@@ -111,7 +134,7 @@
                         </div>
                     </div>
                     <div class="card-footer  p-4">
-                        <button type="button" class="btn btn-primary">Save Job</button>
+                        <button type="submit" class="btn btn-primary">Save Job</button>
                     </div>
             </div>
         </form>
@@ -121,66 +144,60 @@
 @endsection
 @section('customJs')
 <script type="text/javascript">
-$("#updateForm").submit(function (e) {
+    $("#createjobForm").submit(function (e) {
         e.preventDefault();
-    $.ajax({
-        url: '{{ route("account.updateProfile") }}', // Update the URL with the correct endpoint
-        method: 'put',
-        dataType: 'json',
-        data: $("#updateForm").serializeArray(),
-        success: function (response) {
-            // Your request
-            if (response.status == true) {
-                $("#name").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
-                // Handle success
-                $("#email").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
-                // Customized alert with options
-                Swal.fire({
-  title: "Update Profile!",
-  icon: "success",
-  showCancelButton: false,
-  confirmButtonText: "OK",
-}).then((result) => {
-  if (result.isConfirmed) {
-    // Reload the page
-    location.reload();
-  }
-});
-            } else {
-                // Your error handling logic here
-                var errors = response.errors;
+        try {
+            // console.log($("#createjobForm").serializeArray());
+            $.ajax({
+                url: '{{ route("account.saveJob") }}', // Update the URL with the correct endpoint
+                method: 'POST',
+                dataType: 'json',
+                data: $("#createjobForm").serializeArray(),
+                success: function (response) {
+                    // Your request
+                    if (response.status == true) {
+                        $("#title").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                        $("#vacancy").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                        $("#salary").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                        $("#location").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                        $("#description").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                    } else {
+                        var errors = response.errors;
+                        if (errors.title) {
+                            $("#title").addClass('is-invalid').siblings('p').addClass('invalid-feedback').html(errors.title);
+                        } else {
+                            $("#title").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                        }
 
-                if (errors.name) {
-                    $("#name").addClass('is-invalid').siblings('p').addClass('invalid-feedback').html(errors.name);
-                } else {
-                    $("#name").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
-                }
+                        if (errors.description) {
+                            $("#description").addClass('is-invalid').siblings('p').addClass('invalid-feedback').html(errors.description);
+                        } else {
+                            $("#description").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                        }
 
-                if (errors.email) {
-                    $("#email").addClass('is-invalid').siblings('p').addClass('invalid-feedback').html(errors.email);
-                } else {
-                    $("#email").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
-                }
+                        if (errors.vacancy) {
+                            $("#vacancy").addClass('is-invalid').siblings('p').addClass('invalid-feedback').html(errors.vacancy);
+                        } else {
+                            $("#vacancy").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                        }
 
-                if (errors.password) {
-                    $("#password").addClass('is-invalid').siblings('p').addClass('invalid-feedback').html(errors.password);
-                } else {
-                    $("#password").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
-                }
-
-                if (errors.confirm_password) {
-                    $("#confirm_password").addClass('is-invalid').siblings('p').addClass('invalid-feedback').html(errors.confirm_password);
-                } else {
-                    $("#confirm_password").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
-                }
-            }
-        },
-        error: function (error) {
-            // Handle AJAX error, you can log it to the console for debugging
-            console.error("Ajax request failed: ", error);
+                        if (errors.location) {
+                            $("#location").addClass('is-invalid').siblings('p').addClass('invalid-feedback').html(errors.location);
+                        } else {
+                            $("#location").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                        }
+                        if (errors.salary) {
+                            $("#salary").addClass('is-invalid').siblings('p').addClass('invalid-feedback').html(errors.salary);
+                        } else {
+                            $("#salary").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                        }
+                    }
+                },
+            });
+        } catch (error) {
+            console.error("An error occurred at line " + error.lineNumber + ": ", error);
         }
     });
-});
+    </script>
 
-</script>
 @endsection

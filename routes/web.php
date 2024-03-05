@@ -14,11 +14,6 @@ use App\Http\Controllers\AccountController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-// Route::get('/', function () {
-//     return view('welcome');
-//if user Logged in == No And it access Login Profile Page then profile page it wiil redirect to login page user  page.
-// });
 Route::get('/',[HomeController::class,'index'])->name('home');
 Route::prefix('account')->group(function () {
     // Guest Router
@@ -35,6 +30,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/logout', [AccountController::class, 'logout'])->name('account.logout');
     Route::post('/update-profile-pic', [AccountController::class, 'updateProfilepic'])->name('account.updateProfilepic');
     Route::get('/create-job', [AccountController::class, 'createJob'])->name('account.create-Job');
+    Route::post('/save-job', [AccountController::class, 'saveJob'])->name('account.saveJob');
 });
 });
 

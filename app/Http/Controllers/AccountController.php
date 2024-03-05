@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use App\Models\Category;
+use App\Models\Job;
+use App\Models\jobType;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
@@ -30,14 +33,12 @@ $validator = validator::make($request->all(),[
 
 ]);
 if($validator->passes()){
-    // dd('success');
     $user = new User();
     $user->name = $request->name;
     $user->email = $request->email;
     $user->password = Hash::make($request->password);
     $user->save();
      session()->flash('success','You have Register Successfully.');
-    // dd('Registration successful');
     return response()->json([
         'status' => true,
         'errors' => []
@@ -162,7 +163,8 @@ $image = $manager->read($sourcePath);
 $image->cover(200, 200);
 $image->toPng()->save(public_path('/profile_image/thum/'.$imageName));
 File::delete(public_path('/profile_image/thum/'.Auth::user()->image));
-File::delete(public_path('/profile_image/'.Auth::user()->image));
+File::delete(public_path('/profile_image'.Auth::user()->image));
+// File::delete(public_path('/profile_image/'.Auth::user()->image));
             $user = User::where('id',$id)->update(['image'=>$imageName]);
             session()->flash('success', 'Account Profile image Updated Successfully');
             return response()->json([
@@ -172,8 +174,57 @@ File::delete(public_path('/profile_image/'.Auth::user()->image));
         }
 
         public function createJob(){
-            return view('front.job.create');
+          $categories = Category::orderBy('name', 'ASC')->where('status', 1)->get();
+          $jobTypes = JobType::orderBy('name', 'ASC')->where('status', 1)->get();
+            return view('front.job.create',[
+                'categories' => $categories,
+                'jobTypes' => $jobTypes
+            ]);
 
         }
 
-}
+        public function saveJob(Request $request){
+             $rules = [
+                'title' =>'required|min:5|max:100',
+                'description' =>'required|string|min:5|max:100',
+                'category' =>'required',
+                'jobType' =>'required|integer',
+                'vacancy' =>'required|integer',
+                'location' =>'required|string',
+                'salary' =>'required|max:50',
+                'company_name' =>'required',
+            ];
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'errors' => $validator->errors(),
+                ]);
+            }
+            $data = [
+                'title' => $request->title,
+                'salary' => $request->salary,
+                'description' => $request->description,
+                'category_id' => $request->category,
+                'job_type_id' => $request->jobType,
+                'vacancy' => $request->vacancy,
+                'responsibility' => $request->responsibility,
+                'benefits' => $request->benefits,
+                'qualifications' => $request->qualifications,
+                'experience' => $request->experience,
+                'keywords' => $request->keywords,
+                'company_name' => $request->company_name,
+                'location' => $request->location,
+                'website' => $request->website,
+            ];
+
+            Job::create($data);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Job created successfully',
+            ]);
+            }
+
+
+        }
