@@ -10,6 +10,7 @@ class Job extends Model
 {
     use HasFactory , SoftDeletes;
     protected $fillable = [
+        'user_id',
         'title',
         'category_id',
         'job_type_id',
@@ -21,6 +22,8 @@ class Job extends Model
         'responsibility',
         'qualifications',
         'keywords',
+        'is_featured',
+        'status',
         'experience',
         'company_name',
         'company_location',
@@ -28,4 +31,13 @@ class Job extends Model
         'updated_at',
         'deleted_at'
     ];
+
+    public function jobType()
+    {
+        return $this->belongsTo(JobType::class);
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('jobs', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->foreignid('category_id')->constrained()->onDelete('cascade');
             $table->foreignid('job_type_id')->constrained()->onDelete('cascade');
@@ -28,6 +29,8 @@ return new class extends Migration
             $table->string('company_name');
             $table->string('company_location')->nullable();
             $table->string('company_website')->nullable();
+            $table->integer('is_featured')->default(0);
+            $table->integer('status')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

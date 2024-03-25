@@ -12,10 +12,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
+use App\Models\Scopes\AuthScope;
 use Intervention\Image\Drivers\Gd\Driver;
 
 class AccountController extends Controller
 {
+    public function __construct(Request $request)
+    {
+
+    }
 
     // This method will show user registeraton page
     public function registration(){
@@ -25,53 +30,53 @@ class AccountController extends Controller
 
     public function processRegistration(Request  $request)
     {
-$validator = validator::make($request->all(),[
-    'name' => 'required',
-    'email' => 'required|email:unique:users,email',
-    'password' => 'required|min:5|same:confirm_password',
-    'confirm_password' => 'required',
+            $validator = validator::make($request->all(),[
+                'name' => 'required',
+                'email' => 'required|email:unique:users,email',
+                'password' => 'required|min:5|same:confirm_password',
+                'confirm_password' => 'required',
 
-]);
-if($validator->passes()){
-    $user = new User();
-    $user->name = $request->name;
-    $user->email = $request->email;
-    $user->password = Hash::make($request->password);
-    $user->save();
-     session()->flash('success','You have Register Successfully.');
-    return response()->json([
-        'status' => true,
-        'errors' => []
-    ]);
+                ]);
+            if($validator->passes()){
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+            $user->save();
+            session()->flash('success','You have Register Successfully.');
+            return response()->json([
+                'status' => true,
+                'errors' => []
+            ]);
 
-} else{
-    return response()->json([
-        'status' => false,
-        'errors' => $validator->errors()
-    ]);
-}
+            } else{
+                return response()->json([
+                    'status' => false,
+                    'errors' => $validator->errors()
+                ]);
+            }
     }
     // This method will show user registeration page
-    public function login(){
-        return view('front.account.login');
+        public function login(){
+            return view('front.account.login');
 
-    }
+        }
     public function authenticate(Request $request){
-        $email = $request->email;
-        $password = $request->password;
-        $validator = Validator::make($request->all(),[
-            'email' =>'required|email',
-            'password' => 'required',
-        ]);
-        if($validator->fails()){
-            return redirect()->route('account.login')->withErrors($validator)
-            ->withInput($request->only('email'));
-    }else{
-if(Auth::attempt(['email' => $email, 'password' => $password])){
-    return redirect()->route('account.profile');
+                $email = $request->email;
+                $password = $request->password;
+                $validator = Validator::make($request->all(),[
+                    'email' =>'required|email',
+                    'password' => 'required',
+                ]);
+                    if($validator->fails()){
+                        return redirect()->route('account.login')->withErrors($validator)
+                        ->withInput($request->only('email'));
+                }else{
+            if(Auth::attempt(['email' => $email, 'password' => $password])){
+                return redirect()->route('account.profile');
 
-}else{
-    return redirect()->route('account.login')->with('error','Invalid Credentials');
+            }else{
+                return redirect()->route('account.login')->with('error','Invalid Credentials');
 }
     }
 
@@ -89,9 +94,8 @@ if(Auth::attempt(['email' => $email, 'password' => $password])){
     }
 
     public function updateProfile(Request $request){
+        $id = Auth::user()->id;
         try {
-
-            $id = Auth::user()->id;
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
                 'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($id)],
@@ -137,7 +141,7 @@ if(Auth::attempt(['email' => $email, 'password' => $password])){
 
         }
         public function updateProfilepic(Request $request){
-        $id = Auth::user()->id;
+             $id = Auth::user()->id;
             $validator = Validator::make($request->all(), [
                 'image' => 'required|mimes:jpeg,png,jpg',
             ]);
@@ -152,19 +156,13 @@ if(Auth::attempt(['email' => $email, 'password' => $password])){
             $image = $request->image;
             $imageName = $id.'-'.time().'.'.$image->getClientOriginalExtension();
             $image->move(public_path('/profile_image/'),$imageName);
-
-
-          // Create the thumbnail
-// create a new image instance (800 x 600)
-$sourcePath = public_path('/profile_image/'.$imageName);
-$manager = new ImageManager(Driver::class);
-$image = $manager->read($sourcePath);
-// resize and fit the image to 200x200 maintaining the aspect ratio
-$image->cover(200, 200);
-$image->toPng()->save(public_path('/profile_image/thum/'.$imageName));
-File::delete(public_path('/profile_image/thum/'.Auth::user()->image));
-File::delete(public_path('/profile_image'.Auth::user()->image));
-// File::delete(public_path('/profile_image/'.Auth::user()->image));
+            $sourcePath = public_path('/profile_image/'.$imageName);
+            $manager = new ImageManager(Driver::class);
+            $image = $manager->read($sourcePath);
+            $image->cover(200, 200);
+            $image->toPng()->save(public_path('/profile_image/thum/'.$imageName));
+            File::delete(public_path('/profile_image/thum/'.Auth::user()->image));
+            File::delete(public_path('/profile_image'.Auth::user()->image));
             $user = User::where('id',$id)->update(['image'=>$imageName]);
             session()->flash('success', 'Account Profile image Updated Successfully');
             return response()->json([
@@ -186,7 +184,7 @@ File::delete(public_path('/profile_image'.Auth::user()->image));
         public function saveJob(Request $request){
              $rules = [
                 'title' =>'required|min:5|max:100',
-                'description' =>'required|string|min:5|max:100',
+                'description' =>'required|string|min:5',
                 'category' =>'required',
                 'jobType' =>'required|integer',
                 'vacancy' =>'required|integer',
@@ -202,6 +200,7 @@ File::delete(public_path('/profile_image'.Auth::user()->image));
                 ]);
             }
             $data = [
+                'user_id' => Auth::user()->id,
                 'title' => $request->title,
                 'salary' => $request->salary,
                 'description' => $request->description,
@@ -215,16 +214,22 @@ File::delete(public_path('/profile_image'.Auth::user()->image));
                 'keywords' => $request->keywords,
                 'company_name' => $request->company_name,
                 'location' => $request->location,
+                'company_location' => $request->company_location,
                 'website' => $request->website,
             ];
 
             Job::create($data);
 
+            session()->flash('success', 'Job Create Successfully');
             return response()->json([
                 'status' => true,
                 'message' => 'Job created successfully',
             ]);
             }
-
-
+            public function myJobs(){
+                $jobs = Job::where('user_id',Auth::user()->id)->with('jobtype')->paginate(10);
+                return view('front.job.my-job',[
+                    'jobs' => $jobs
+                ]);
+            }
         }

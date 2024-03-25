@@ -66,16 +66,19 @@
                             <div class="mb-4 col-md-6">
                                 <label for="" class="mb-2">Salary</label>
                                 <input type="text" placeholder="Salary" id="salary" name="salary" class="form-control">
+                                <p></p>
                             </div>
 
                             <div class="mb-4 col-md-6">
                                 <label for="" class="mb-2">Location <span class="req">*</span> </label>
                                 <input type="text" placeholder="location" id="location" name="location" class="form-control">
+                                <p></p>
                             </div>
                         </div>
                         <div class="mb-4">
                             <label for="" class="mb-2">Description<span class="req">*</span></label>
                             <textarea class="form-control" name="description" id="description" cols="5" rows="5" placeholder="Description"></textarea>
+                            <p></p>
                         </div>
                         <div class="mb-4">
                             <label for="" class="mb-2">Benefits</label>
@@ -120,11 +123,12 @@
                             <div class="mb-4 col-md-6">
                                 <label for="" class="mb-2">Name<span class="req">*</span></label>
                                 <input type="text" placeholder="Company Name" id="company_name" name="company_name" class="form-control">
+                                <p></p>
                             </div>
 
                             <div class="mb-4 col-md-6">
                                 <label for="" class="mb-2">Location</label>
-                                <input type="text" placeholder="Location" id="location" name="location" class="form-control">
+                                <input type="text" placeholder="Location" id="company_location" name="company_location" class="form-control">
                             </div>
                         </div>
 
@@ -147,7 +151,7 @@
     $("#createjobForm").submit(function (e) {
         e.preventDefault();
         try {
-            // console.log($("#createjobForm").serializeArray());
+            console.log($("#createjobForm").serializeArray());
             $.ajax({
                 url: '{{ route("account.saveJob") }}', // Update the URL with the correct endpoint
                 method: 'POST',
@@ -161,6 +165,8 @@
                         $("#salary").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
                         $("#location").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
                         $("#description").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                        $("#company_name").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                        window.location.href = "/account/my-jobs";
                     } else {
                         var errors = response.errors;
                         if (errors.title) {
@@ -190,6 +196,13 @@
                             $("#salary").addClass('is-invalid').siblings('p').addClass('invalid-feedback').html(errors.salary);
                         } else {
                             $("#salary").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                            // window.location.href = "/account.myJobs";
+                        }
+                        if (errors.company_name) {
+                            $("#company_name").addClass('is-invalid').siblings('p').addClass('invalid-feedback').html(errors.salary);
+                        } else {
+                            $("#company_name").removeClass('is-invalid').siblings('p').removeClass('invalid-feedback').html('');
+                            // window.location.href = "/account.myJobs";
                         }
                     }
                 },
