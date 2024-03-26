@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\AuthScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,6 +10,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Job extends Model
 {
     use HasFactory , SoftDeletes;
+    protected static function booted()
+    {
+        static::addGlobalScope(new AuthScope);
+    }
     protected $fillable = [
         'user_id',
         'title',
@@ -31,6 +36,7 @@ class Job extends Model
         'updated_at',
         'deleted_at'
     ];
+
 
     public function jobType()
     {

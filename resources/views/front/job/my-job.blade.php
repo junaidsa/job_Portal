@@ -78,7 +78,7 @@
                             </table>
                         </div>
                     </div>
-                    {{$job->link()}}
+                    {{-- {{$job->link()}} --}}
                 </div>
         </div>
     </div>
