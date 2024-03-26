@@ -18,6 +18,16 @@ class JobFactory extends Factory
     {
         return [
             //
+            'title' => fake()->name,
+            'user_id' => rand(1,3),
+            'job_type_id' => rand(1,5),
+            'category_id' => rand(1,5),
+            'vacancy' => rand(1,5),
+            'location' => fake()->city,
+            'salary' =>  rand(1000,5000),
+            'description' => fake()->text,
+            'experience' => rand(1,15),
+            'company_name' => fake()->name,
         ];
     }
 }

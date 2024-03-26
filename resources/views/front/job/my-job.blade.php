@@ -52,9 +52,9 @@
                                             <td>0 Applications</td>
                                             <td>
                                                 @if ($job->status == 1)
-                                                    <div class="job-status text-capitalize text-success bg-success">Active</div>
+                                                    <div class="job-status text-capitalize text-success">Active</div>
                                                     @else
-                                                    <div class="job-status text-capitalize text-danger bg-danger">Block</div>
+                                                    <div class="job-status text-capitalize text-danger">Block</div>
                                                 @endif
                                             </td>
                                             <td>
@@ -71,15 +71,14 @@
                                             </td>
                                         </tr>
                                     @endforeach
-
                                     @endif
                                      </tbody>
-
                             </table>
                         </div>
                     </div>
-                    {{-- {{$job->link()}} --}}
+                    {{$jobs->links()}}
                 </div>
+            </div>
         </div>
     </div>
 </section>

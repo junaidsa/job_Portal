@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManager;
 use App\Models\Scopes\AuthScope;
+use Illuminate\Support\Facades\DB;
 use Intervention\Image\Drivers\Gd\Driver;
 
 class AccountController extends Controller
@@ -227,7 +228,7 @@ class AccountController extends Controller
             ]);
             }
             public function myJobs(){
-                $jobs = Job::with('jobtype')->get();
+                $jobs = Job::with('jobtype')->paginate(5);
                 return view('front.job.my-job',[
                     'jobs' => $jobs
                 ]);
