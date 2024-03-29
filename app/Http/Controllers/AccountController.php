@@ -306,9 +306,11 @@ class AccountController extends Controller
 
     public function deleteJob(Request $request)
     {
+        // dd($request->id);
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer',
         ]);
+
 
         if ($validator->fails()) {
             return response()->json([
@@ -318,7 +320,7 @@ class AccountController extends Controller
         }
         $job = Job::find($request->id);
         if (!$job) {
-            session()->flash('error', 'Job not found Successfully');
+          return  session()->flash('error', 'Job not found Successfully');
         }
         $job->delete();
         session()->flash('success', 'Job deleted Successfully');
