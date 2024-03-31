@@ -6,10 +6,15 @@ use App\Models\Category;
 use App\Models\Job;
 use Illuminate\Http\Request;
 use App\Models\Scopes\AuthScope;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
-    //
+    public $user;
+    public function __construct()
+    {
+        $this->user =Auth::user();
+    }
     public function index(){
         try {
                 $categories = Category::where('status',1)
