@@ -18,6 +18,7 @@ use App\Http\Controllers\JobController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/jobs', [JobController::class, 'index'])->name('jobs');
+Route::get('/job/details/{id}', [JobController::class, 'details'])->name('jobDetails');
 Route::prefix('account')->group(function () {
     // Guest Router
     Route::group(['middleware' => 'guest'], function () {

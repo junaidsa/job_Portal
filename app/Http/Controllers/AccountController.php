@@ -22,7 +22,7 @@ class AccountController extends Controller
     public $user;
     public function __construct()
     {
-        $this->user =Auth::user();
+        $this->user = Auth::user();
     }
 
     // This method will show user registeraton page
@@ -88,7 +88,7 @@ class AccountController extends Controller
     }
     public function profile()
     {
-        $user = User::find($this->user->id);
+        $user = User::find(Auth::user()->id);
         return view('front.account.profile', [
             'user' => $user
         ]);
@@ -105,7 +105,7 @@ class AccountController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
-                'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($this->user->id)],
+                'email' => ['required', 'email', Rule::unique('users', 'email')->ignore(Auth::user()->id)],
             ]);
 
             if ($validator->fails()) {
@@ -115,7 +115,7 @@ class AccountController extends Controller
                 ], 422);
             }
 
-            $user = User::find($this->user->id);
+            $user = User::find(Auth::user()->id);
 
             if (!$user) {
                 return response()->json([
@@ -155,7 +155,7 @@ class AccountController extends Controller
         }
 
         $image = $request->image;
-        $imageName = $this->user->id . '-' . time() . '.' . $image->getClientOriginalExtension();
+        $imageName = Auth::user()->id . '-' . time() . '.' . $image->getClientOriginalExtension();
         $image->move(public_path('/profile_image/'), $imageName);
         $sourcePath = public_path('/profile_image/' . $imageName);
         $manager = new ImageManager(Driver::class);
@@ -164,7 +164,7 @@ class AccountController extends Controller
         $image->toPng()->save(public_path('/profile_image/thum/' . $imageName));
         File::delete(public_path('/profile_image/thum/' . $this->user->image));
         File::delete(public_path('/profile_image' . $this->user->image));
-        $user = User::where('id', $this->user->id)->update(['image' => $imageName]);
+        $user = User::where('id', Auth::user()->id)->update(['image' => $imageName]);
         session()->flash('success', 'Account Profile image Updated Successfully');
         return response()->json([
             'status' => true,
@@ -207,7 +207,7 @@ class AccountController extends Controller
                 ]);
             }
             $data = [
-                'user_id' => $this->user->id,
+                'user_id' => Auth::user()->id,
                 'title' => $request->title,
                 'salary' => $request->salary,
                 'description' => $request->description,

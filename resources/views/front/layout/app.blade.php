@@ -11,7 +11,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}" />
     <!-- CDN link -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 	<!-- Fav Icon -->
 	<link rel="shortcut icon" type="image/x-icon" href="#" />
@@ -30,7 +30,7 @@
 						<a class="nav-link" aria-current="page" href="index.html">Home</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" aria-current="page" href="jobs.html">Find Jobs</a>
+						<a class="nav-link" aria-current="page" href="{{route('jobs')}}">Find Jobs</a>
 					</li>
 				</ul>
                 @guest
@@ -74,7 +74,7 @@
 
 <footer class="bg-dark py-3 bg-2">
 <div class="container">
-    <p class="text-center text-white pt-3 fw-bold fs-6">© 2023 xyz company, all right reserved</p>
+    <p class="text-center text-white pt-3 fw-bold fs-6">© 2024 QP , all right reserved</p>
 </div>
 </footer>
     <!-- Optional JavaScript -->
