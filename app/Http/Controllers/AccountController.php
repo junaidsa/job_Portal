@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Job;
+use App\Models\JobApplication;
 use App\Models\jobType;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -347,6 +348,10 @@ class AccountController extends Controller
         }catch (\Exception $e) {
             return response()->json(['error' =>  $e->getMessage(),'line'=> $e->getLine(),'File'=> $e->getFile()], 500);
         }
-
+    }
+    public function myJobApplications()
+    {
+        $job = JobApplication::all  ();
+        return view('front.job.my-job-applications');
     }
 }

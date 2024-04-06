@@ -2,19 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\JobNotificationEmail;
 use App\Models\Category;
 use App\Models\Job;
+use App\Models\JobApplication;
 use App\Models\JobType;
 use App\Models\Scopes\AuthScope;
+use App\Models\User;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class JobController extends Controller
 {
-    public $user;
     public function __construct()
     {
-        $this->user =Auth::user();
+        // $this->user_id =Auth::user()->id;
     }
     public function index(Request $request)
     {
@@ -72,12 +78,83 @@ class JobController extends Controller
 }
 
     public function details($id){
-
-        echo $id;
-        // $details = Job::with('jobType','category')->where('id',$id)->first();
-        // return view('front.job.details',[
-        //     'details' => $details,
-        // ]);
-
+        $details = Job::withoutGlobalScope(AuthScope::class)
+        ->with('jobType','category')
+        ->where(['id' => $id
+        ,'status' => 1])->first();
+        if(!$details)
+        {
+            return abort(404);
+        }
+        return view('front.jobdetails',[
+            'details' => $details,
+        ]);
     }
+
+    public function applyJob(Request $request){
+        try{
+                $validator = Validator::make($request->all(), [
+                    'id' => 'required|int|digits_between:1,11',
+                ]);
+                if ($validator->fails()) {
+                    return response()->json([
+                        'status' => false,
+                        'error' => $validator->errors()
+                    ]);
+                }
+                    $job = Job::withoutGlobalScope(AuthScope::class)->find($request->id);
+                    if(!$job)
+                    {
+                        session()->flash('error','Job not found');
+                        return response()->json([
+                        'status' => false,
+                            'error' => 'Job not found'
+                        ]);
+
+                    }
+                    $employer_id = $job->user_id;
+                    if ($employer_id == Auth::user()->id)
+                    {
+                        session()->flash('success','You can not Apply your own Job');
+                        return response()->json([
+                        'status' => true,
+                            'error' => 'You can not Apply your own Job'
+                        ]);
+                    }
+                    $jobApplication = JobApplication::where('job_id', $request->id)
+                                        ->where('user_id', Auth::user()->id)
+                                        ->exists();
+                                        if($jobApplication){
+                                            session()->flash('error','You have already applied for this job');
+                                            return response()->json([
+                                            'status' => false,
+                                                'error' => 'You have already applied for this job'
+                                            ]);
+                                        }
+                    JobApplication::Create(
+                        [
+                            'user_id' => Auth::user()->id,
+                            'job_id' => $job->id,
+                            'employer_id' => $employer_id,
+                            'applied_date' => now(),
+                        ]
+                    );
+                    session()->flash('success','Job applied  job successfully');
+                    $employes = User::find($employer_id);
+                    $mailData =[
+                        'employes' => $employes,
+                        'user' => Auth::user(),
+                        'job' => $job,
+                    ];
+                    Mail::to($employes->email)->send(new JobNotificationEmail($mailData));
+
+                    return response()->json([
+                    'status' => true,
+                        'success' => 'Job applied  job successfully'
+                    ]);
+        }catch (\Exception $e) {
+            return response()->json(['error' =>  $e->getMessage(),'line'=> $e->getLine(),'File'=> $e->getFile()], 500);
+        }
+    }
+
 }

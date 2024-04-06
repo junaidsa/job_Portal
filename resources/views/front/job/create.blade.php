@@ -144,7 +144,7 @@
 
                                 <div class="mb-4">
                                     <label for="" class="mb-2">Website</label>
-                                    <input type="text" placeholder="Website" id="website" name="website"
+                                    <input type="url" placeholder="Website" id="website" name="website"
                                         class="form-control">
                                 </div>
                             </div>
