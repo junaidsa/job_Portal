@@ -142,36 +142,40 @@ class AccountController extends Controller
             return response()->json(['error' =>  $e->getMessage(),'line'=> $e->getLine(),'File'=> $e->getFile()], 500);
         }
     }
-    public function updateProfilepic(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'image' => 'required|mimes:jpeg,png,jpg',
-        ]);
+    public function updateProfilepic(Request $request){
+        $id = Auth::user()->id;
+            $validator = Validator::make($request->all(), [
+                'image' => 'required|mimes:jpeg,png,jpg',
+            ]);
 
-        if ($validator->fails()) {
+            if($validator->fails()){
             return response()->json([
-                'status' => false,
-                'error' => $validator->errors()
+            'status' => false,
+            'error' => $validator->errors()
+            ]);
+            }
+
+            $image = $request->image;
+            $imageName = $id.'-'.time().'.'.$image->getClientOriginalExtension();
+            $image->move(public_path('/profile_image/'),$imageName);
+                    // Create the thumbnail
+            // create a new image instance (800 x 600)
+            $sourcePath = public_path('/profile_image/'.$imageName);
+            $manager = new ImageManager(Driver::class);
+            $image = $manager->read($sourcePath);
+            // resize and fit the image to 200x200 maintaining the aspect ratio
+            $image->cover(200, 200);
+            $image->toPng()->save(public_path('/profile_image/thum/'.$imageName));
+            File::delete(public_path('/profile_image/thum/'.Auth::user()->image));
+            File::delete(public_path('/profile_image/'.Auth::user()->image));
+            $user = User::where('id',$id)->update(['image'=>$imageName]);
+            session()->flash('success', 'Account Profile image Updated Successfully');
+            return response()->json([
+              'status' => true,
+                'errors' => [],
             ]);
         }
 
-        $image = $request->image;
-        $imageName = Auth::user()->id . '-' . time() . '.' . $image->getClientOriginalExtension();
-        $image->move(public_path('/profile_image/'), $imageName);
-        $sourcePath = public_path('/profile_image/' . $imageName);
-        $manager = new ImageManager(Driver::class);
-        $image = $manager->read($sourcePath);
-        $image->cover(200, 200);
-        $image->toPng()->save(public_path('/profile_image/thum/' . $imageName));
-        File::delete(public_path('/profile_image/thum/' . $this->user->image));
-        File::delete(public_path('/profile_image' . $this->user->image));
-        $user = User::where('id', Auth::user()->id)->update(['image' => $imageName]);
-        session()->flash('success', 'Account Profile image Updated Successfully');
-        return response()->json([
-            'status' => true,
-            'errors' => [],
-        ]);
-    }
 
     public function createJob()
     {
@@ -351,7 +355,37 @@ class AccountController extends Controller
     }
     public function myJobApplications()
     {
-        $job = JobApplication::all  ();
-        return view('front.job.my-job-applications');
+        $jobApplications = JobApplication::with(['job','job.jobType','job.appications'  => function ($query) {
+            $query->withoutGlobalScope(AuthScope::class);
+        }])->paginate(10);
+        return view('front.job.my-job-applications',[
+            'jobApplications' => $jobApplications
+        ]);
+    }
+    public function deleteAppliedjob(Request $request)
+    {
+        try{
+                $validator = Validator::make($request->all(), [
+                    'id' => 'required|integer',
+                ]);
+                if ($validator->fails()) {
+                    return response()->json([
+                        'status' => false,
+                        'errors' => $validator->errors(),
+                    ], 422);
+                }
+                    $jobapplied = JobApplication::find($request->id);
+                    if (!$jobapplied) {
+                    return  session()->flash('error', 'Applied Job not found Successfully');
+                    }
+                    $jobapplied->delete();
+                    session()->flash('success', 'Applied Job deleted Successfully');
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Applied Job deleted successfully',
+                    ]);
+        }catch (\Exception $e) {
+            return response()->json(['error' =>  $e->getMessage(),'line'=> $e->getLine(),'File'=> $e->getFile()], 500);
+        }
     }
 }

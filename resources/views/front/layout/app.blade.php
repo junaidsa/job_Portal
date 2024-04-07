@@ -100,7 +100,7 @@ $('#profilepicForm').submit(function(e) {
     var formData = new FormData(this);
     $.ajax({
         url: '{{ route("account.updateProfilepic") }}',
-        method: 'POST',
+        method: 'post',
         data: formData,
         dataType: 'json',
         contentType: false,
