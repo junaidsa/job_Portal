@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Job;
 use App\Models\JobApplication;
 use App\Models\JobType;
+use App\Models\SaveJob;
 use App\Models\Scopes\AuthScope;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
@@ -156,5 +157,38 @@ class JobController extends Controller
             return response()->json(['error' =>  $e->getMessage(),'line'=> $e->getLine(),'File'=> $e->getFile()], 500);
         }
     }
-
+    public function savejob(Request $request){
+        $job = Job::withoutGlobalScope(AuthScope::class)->find($request->id);
+        
+        if(!$job) {
+            session()->flash('error', 'Job not found');
+            return response()->json([
+                'status' => false,
+                'error' => 'Job not found'
+            ]);
+        }
+        
+        $employer_id = $job->user_id;
+        
+        if ($employer_id == Auth::user()->id) {
+            session()->flash('success', 'You cannot save your own job');
+            return response()->json([
+                'status' => true,
+                'error' => 'You cannot save your own job'
+            ]);
+        }
+        
+        // Insert the record if conditions are met
+        SaveJob::create([
+            'job_id' => $request->id,
+            'user_id' => Auth::user()->id
+        ]);
+    
+        session()->flash('success', 'Job saved successfully');
+        return response()->json([
+            'status' => true,
+            'success' => 'Job saved successfully'
+        ]);
+    }
+    
 }

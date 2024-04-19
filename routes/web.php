@@ -20,6 +20,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/jobs', [JobController::class, 'index'])->name('jobs');
 Route::get('/job/details/{id}', [JobController::class, 'details'])->name('jobDetails');
 Route::post('/apply-job', [JobController::class, 'applyJob'])->name('applyJob');
+Route::post('/save-job', [JobController::class, 'savejob'])->name('savejob');
 Route::prefix('account')->group(function () {
     // Guest Router
     Route::group(['middleware' => 'guest'], function () {
@@ -42,5 +43,6 @@ Route::prefix('account')->group(function () {
         Route::post('/delete-job', [AccountController::class, 'deleteJob'])->name('account.deletetJob');
         Route::get('/my-job-applications', [AccountController::class, 'myJobApplications'])->name('account.my-job-applications');
         Route::post('/delete-application-job', [AccountController::class, 'deleteAppliedjob'])->name('account.deletetAppliedjob');
+        Route::get('/savejob', [AccountController::class, 'savejobList'])->name('account.savejob');
     });
 });

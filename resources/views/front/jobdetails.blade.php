@@ -15,7 +15,7 @@
     <div class="container job_details_area">
         <div class="row pb-5">
             <div class="col-md-8">
-                @include('front.message');
+                @include('front.message')
                 <div class="card shadow border-0">
                     <div class="job_details_header">
                         <div class="single_jobs white-bg d-flex justify-content-between">
@@ -59,7 +59,7 @@
                                     <h4>Qualifications</h4>
                                     {!! nl2br($details->qualifications)!!}
                                 </div>
-                            @endif;
+                            @endif
 
                             @if (!empty($details->benefits))
                             <div class="single_wrap">
@@ -69,7 +69,7 @@
                             @endif
                         <div class="border-bottom"></div>
                         <div class="pt-3 text-end">
-                            <a href="#" class="btn btn-secondary">Save</a>
+                            <a href="#" class="btn btn-secondary" onclick="saveJob({{ $details->id }})">Save</a>
                             @auth
                             <a href="#" onclick="applyJob({{ $details->id }})" class="btn btn-primary">Apply</a>
                             @else
@@ -121,6 +121,21 @@
         if (confirm('Are you sure you want to apply this job')){
             $.ajax({
                 url: "{{ route('applyJob') }}",
+                type: 'post',
+                data:{id:id},
+                dataType: 'json',
+                success: function(response){
+               // Reload the current page
+                    location.reload();
+                }
+            });
+        }
+
+        }
+    function saveJob(id){
+        if (confirm('Are you sure you want to save this job')){
+            $.ajax({
+                url: "{{ route('savejob') }}",
                 type: 'post',
                 data:{id:id},
                 dataType: 'json',

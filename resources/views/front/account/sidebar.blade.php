@@ -1,7 +1,21 @@
+<style>
+    #pencil {
+        position: absolute;
+        left: 54%;
+        z-index: 999;
+        border-radius:20px; 
+        background-color: #fff;
+        padding:5px; 
+        border: 1px solid #000;
+        width: 28px;
+        height: 28px;
+        display: flex;
+    }
+</style>
 <div class="card border-0 shadow mb-4 p-3">
     <div class="s-body text-center mt-3 position-relative">
-        <div class="position-absolute" style="left: 50%; z-index:999;  top:-10%; box-shadow: -13px 20px 20px 16px #f4f4f4; border-radius: 20px;">
-            <svg data-bs-target="#exampleModal" data-bs-toggle="modal" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+        <div id="pencil">
+            <svg  data-bs-target="#exampleModal" data-bs-toggle="modal" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
                 <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"/>
               </svg>
         </div>
@@ -29,7 +43,7 @@
                 <a href="{{route('account.my-job-applications')}}">Jobs Applied</a>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                <a href="saved-jobs.html">Saved Jobs</a>
+                <a href="{{route('account.savejob')}}">Saved Jobs</a>
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center p-3">
                 <a href="{{route('account.logout')}}">Logout</a>

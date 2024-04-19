@@ -388,4 +388,8 @@ class AccountController extends Controller
             return response()->json(['error' =>  $e->getMessage(),'line'=> $e->getLine(),'File'=> $e->getFile()], 500);
         }
     }
+
+    public function savejobList(){
+        return view('front.job.savejob');
+    }
 }
