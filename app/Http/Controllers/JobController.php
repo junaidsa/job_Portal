@@ -87,12 +87,14 @@ class JobController extends Controller
         {
             return abort(404);
         }
-        // if()
-        $savejob = SaveJob::where('job_id',$id)->exists();
-        return view('front.jobdetails',[
-            'details' => $details,
-            'savejob' => $savejob,
-        ]);
+        $savejob = 0;
+        if(Auth::user()){
+            $savejob = SaveJob::where('job_id',$id)->exists();
+            return view('front.jobdetails',[
+                'details' => $details,
+                'savejob' => $savejob,
+            ]);
+        }
     }
 
     public function applyJob(Request $request){
