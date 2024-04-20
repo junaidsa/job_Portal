@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Job;
 use App\Models\JobApplication;
 use App\Models\jobType;
+use App\Models\SaveJob;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
@@ -390,6 +391,39 @@ class AccountController extends Controller
     }
 
     public function savejobList(){
-        return view('front.job.savejob');
+       $savejobs =  SaveJob::with(['job' => function ($query) {
+        $query->withoutGlobalScope(AuthScope::class);
+    }])
+    ->orderBy('id','DESC')
+    ->paginate(6);
+        return view('front.job.savejob',[
+            'savejobs' => $savejobs
+        ]);
+    }
+    public function deleteSaveJob(Request $request)
+    {
+        try{
+                $validator = Validator::make($request->all(), [
+                    'id' => 'required|integer',
+                ]);
+                if ($validator->fails()) {
+                    return response()->json([
+                        'status' => false,
+                        'errors' => $validator->errors(),
+                    ], 422);
+                }
+                    $job = SaveJob::find($request->id);
+                    if (!$job) {
+                    return  session()->flash('error', 'Job not found Successfully');
+                    }
+                    $job->delete();
+                    session()->flash('success', 'Job deleted Successfully');
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Job deleted successfully',
+                    ]);
+        }catch (\Exception $e) {
+            return response()->json(['error' =>  $e->getMessage(),'line'=> $e->getLine(),'File'=> $e->getFile()], 500);
+        }
     }
 }

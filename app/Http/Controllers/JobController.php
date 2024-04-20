@@ -87,8 +87,11 @@ class JobController extends Controller
         {
             return abort(404);
         }
+        // if()
+        $savejob = SaveJob::where('job_id',$id)->exists();
         return view('front.jobdetails',[
             'details' => $details,
+            'savejob' => $savejob,
         ]);
     }
 
@@ -177,6 +180,15 @@ class JobController extends Controller
                 'error' => 'You cannot save your own job'
             ]);
         }
+         $savejob = SaveJob::where('job_id',$request->id)->exists();
+         if ($savejob) {
+            # code...
+            session()->flash('error', 'This job already exists');
+            return response()->json([
+                'status' => true,
+                'error' => 'This job already exists'
+            ]);
+         }
         
         // Insert the record if conditions are met
         SaveJob::create([

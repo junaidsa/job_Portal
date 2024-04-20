@@ -1,17 +1,3 @@
-<style>
-    #pencil {
-        position: absolute;
-        left: 54%;
-        z-index: 999;
-        border-radius:20px; 
-        background-color: #fff;
-        padding:5px; 
-        border: 1px solid #000;
-        width: 28px;
-        height: 28px;
-        display: flex;
-    }
-</style>
 <div class="card border-0 shadow mb-4 p-3">
     <div class="s-body text-center mt-3 position-relative">
         <div id="pencil">

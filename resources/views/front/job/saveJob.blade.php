@@ -22,7 +22,7 @@
                         <div class="card-body card-form">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <h3 class="fs-4 mb-1">Save Jobs</h3>
+                                    <h3 class="fs-4 mb-1">My Save Jobs</h3>
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -30,22 +30,23 @@
                                     <thead class="bg-light">
                                         <tr>
                                             <th scope="col">Title</th>
-                                            <th scope="col">Job Created</th>
                                             <th scope="col">Applicants</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody class="border-0">
-                                                {{-- <tr class="active">
+                                        @if ($savejobs->isNotEmpty())
+                                            @foreach ($savejobs as $savejob)
+                                                <tr class="active">
                                                     <td>
-                                                        <div class="job-name fw-500"></div>
-                                                        <div class="info1">
+                                                        <div class="job-name fw-500">{{$savejob->job->title }}</div>
+                                                        <div class="info1">{{$savejob->job->jobType->name }} . {{ $savejob->job->location }}
+                                                        </div>
                                                     </td>
-                                                    <td></td>
-                                                    <td>0 Applications</td>
+                                                    <td>{{$savejob->job->appications->count()}} Applications</td>
                                                     <td>
-                                                        @if ($job->status == 1)
+                                                        @if ($savejob->job->status == 1)
                                                             <div class="job-status text-capitalize text-success">Active
                                                             </div>
                                                         @else
@@ -53,31 +54,22 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        <div class="action-dots float-end">
-                                                            <button href="#" class="btn" data-bs-toggle="dropdown"
-                                                                aria-expanded="false">
-                                                                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-                                                            </button>
-                                                            <ul class="dropdown-menu dropdown-menu-end">
-                                                                <li><a class="dropdown-item" href="{{route('jobDetails',$job->id)}}"> <i
-                                                                            class="fa fa-eye" aria-hidden="true"></i>
-                                                                        View</a></li>
-                                                                <li><a class="dropdown-item"
-                                                                        href="{{ route('account.editJob', $job->id) }}"><i
-                                                                            class="fa fa-edit" aria-hidden="true"></i>
-                                                                        Edit</a></li>
-                                                                <li><a class="dropdown-item" href="#" onclick="deleteJob({{$job->id}})"><i
-                                                                            class="fa fa-trash" aria-hidden="true"></i>
-                                                                        Delete</a></li>
-                                                            </ul>
-                                                        </div>
+                                                        <a  href="{{route('jobDetails',$savejob->job_id)}}"> <i
+                                                            class="fa fa-eye" aria-hidden="true"></i>
+                                                    </a>
+                                                    &nbsp;&nbsp;
+                                                    <a href="#" onclick="deleteJob({{$savejob->id}})"> <i
+                                                        class="fa fa-trash" aria-hidden="true"></i>
+                                                </a>
                                                     </td>
-                                                </tr> --}}
+                                                </tr>
+                                            @endforeach
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                        {{-- {{ $jobs->links() }} --}}
+                        {{ $savejobs->links() }}
                     </div>
                 </div>
             </div>
@@ -89,7 +81,7 @@
         function deleteJob(id) {
             if (confirm('Are you sure you want to delete this record?')) {
                 $.ajax({
-                    url: "{{ route('account.deletetJob') }}",
+                    url: "{{ route('account.deletetSaveJob') }}",
                     type: 'post',
                     data:{id:id},
                     dataType: 'json',

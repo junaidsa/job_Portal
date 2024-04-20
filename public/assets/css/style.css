@@ -10020,3 +10020,21 @@ footer .nav-link {
   content: '';
 }
 /* '' */
+
+#pencil {
+  position: absolute;
+  left: 54%;
+  z-index: 999;
+  border-radius:20px; 
+  background-color: #fff;
+  padding:5px; 
+  border: 1px solid #000;
+  width: 28px;
+  height: 28px;
+  display: flex;
+}
+
+.save-job{
+  background: #00D363!important;
+  color: #fff !important;
+}

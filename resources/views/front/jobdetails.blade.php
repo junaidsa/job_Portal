@@ -37,7 +37,7 @@
                             </div>
                             <div class="jobs_right">
                                 <div class="apply_now">
-                                    <a class="heart_mark" href="#"> <i class="fa fa-heart-o" aria-hidden="true"></i></a>
+                                    <a class="heart_mark {{ ($savejob == 1) ? 'save-job' : '' }}" href="javascript:void(0)" onclick="saveJob({{ $details->id }})"> <i class="fa fa-heart-o" aria-hidden="true"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -69,7 +69,7 @@
                             @endif
                         <div class="border-bottom"></div>
                         <div class="pt-3 text-end">
-                            <a href="#" class="btn btn-secondary" onclick="saveJob({{ $details->id }})">Save</a>
+                            <a href="javascript:void(0);" class="btn btn-secondary" onclick="saveJob({{ $details->id }})">Save</a>
                             @auth
                             <a href="#" onclick="applyJob({{ $details->id }})" class="btn btn-primary">Apply</a>
                             @else
