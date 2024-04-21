@@ -41,7 +41,7 @@
                                             @foreach ($jobApplications as $jobApplication)
                                                 <tr class="active">
                                                     <td>
-                                                        <div class="job-name fw-500">{{$jobApplication->job->title }}</div>
+                                                        {{-- <div class="job-name fw-500">{{$jobApplication->job->title }}</div> --}}
                                                         <div class="info1">{{$jobApplication->job->jobType->name }} . {{ $jobApplication->job->location }}
                                                         </div>
                                                     </td>

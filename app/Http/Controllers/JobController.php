@@ -90,11 +90,16 @@ class JobController extends Controller
         $savejob = 0;
         if(Auth::user()){
             $savejob = SaveJob::where('job_id',$id)->exists();
+        }
+
+        $jobApplications = JobApplication::withWherehas('user',function($query){
+            $query->withoutGlobalScope(AuthScope::class);
+        })->where('job_id',$id)->get();
             return view('front.jobdetails',[
                 'details' => $details,
                 'savejob' => $savejob,
+                'jobApplications' => $jobApplications,
             ]);
-        }
     }
 
     public function applyJob(Request $request){

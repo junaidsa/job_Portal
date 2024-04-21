@@ -32,6 +32,7 @@ Route::prefix('account')->group(function () {
     // Authenticateded Router
     Route::group(['middleware' => 'auth'], function () {
         Route::put('/update-profile', [AccountController::class, 'updateProfile'])->name('account.updateProfile');
+        Route::post('/update-password', [AccountController::class, 'updatepassword'])->name('account.updatePassword');
         Route::get('/profile', [AccountController::class, 'profile'])->name('account.profile');
         Route::get('/logout', [AccountController::class, 'logout'])->name('account.logout');
         Route::post('/update-profile-pic', [AccountController::class, 'updateProfilepic'])->name('account.updateProfilepic');

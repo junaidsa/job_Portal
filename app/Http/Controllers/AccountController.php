@@ -312,7 +312,6 @@ class AccountController extends Controller
      try{
             $categories = Category::orderBy('name', 'ASC')->where('status', 1)->get();
             $jobTypes = JobType::orderBy('name', 'ASC')->where('status', 1)->get();
-
             $job = Job::find($id);
             if ($job == null) {
                 abort(404);
@@ -325,9 +324,7 @@ class AccountController extends Controller
     }catch (\Exception $e) {
         return response()->json(['error' =>  $e->getMessage(),'line'=> $e->getLine(),'File'=> $e->getFile()], 500);
     }
-
     }
-
     public function deleteJob(Request $request)
     {
         try{
@@ -356,7 +353,9 @@ class AccountController extends Controller
     }
     public function myJobApplications()
     {
-        $jobApplications = JobApplication::with(['job','job.jobType','job.appications'  => function ($query) {
+        $jobApplications = JobApplication::with(['job' => function ($query) {
+            $query->withoutGlobalScope(AuthScope::class);
+        },'job.jobType','job.appications'  => function ($query) {
             $query->withoutGlobalScope(AuthScope::class);
         }])->paginate(10);
         return view('front.job.my-job-applications',[
@@ -425,5 +424,42 @@ class AccountController extends Controller
         }catch (\Exception $e) {
             return response()->json(['error' =>  $e->getMessage(),'line'=> $e->getLine(),'File'=> $e->getFile()], 500);
         }
+    }
+
+    public function updatepassword(Request $request){
+        try{
+            $rules = [
+                'old_password' => 'required|min:5|max:100',
+                'new_password' => 'required|min:5',
+                'confirm_password' => 'required|same:new_password',
+            ];
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'errors' => $validator->errors(),
+                ]);
+            }
+            if (Hash::check($request->old_password,Auth::user()->password) == false) {
+                # code...
+                // session()->set_flashdata('error','Your old password is incorrect');
+                session()->flash('error','Your old password is incorrect');
+                return response()->json([
+                   'status' => true,
+                ]);
+            }
+
+            $user  = User::find(Auth::user()->id);
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+            // session()->set_flashdata('success','Your  password Change successfully');
+            session()->flash('success', 'Your Password Change successfully');
+            return response()->json([
+               'status' => true,
+            ]);
+        }catch (\Exception $e) {
+            return response()->json(['error' =>  $e->getMessage(),'line'=> $e->getLine(),'File'=> $e->getFile()], 500);
+        }
+
     }
 }

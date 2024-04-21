@@ -10038,3 +10038,7 @@ footer .nav-link {
   background: #00D363!important;
   color: #fff !important;
 }
+.appiedborder {
+  border-bottom: 2px solid #A8DF8E;
+  padding-bottom: 5px;
+}

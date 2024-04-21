@@ -23,7 +23,7 @@
 
                                 <div class="jobs_conetent">
                                     <a href="#">
-                                        <h4>{{$details->category->name}}</h4>
+                                        <h4>{{$details->title}}</h4>
                                     </a>
                                     <div class="links_locat d-flex align-items-center">
                                         <div class="location">
@@ -78,6 +78,60 @@
                         </div>
                     </div>
                 </div>
+                @auth
+                @if(Auth::user()->id == $details->user_id)
+                <div class="card shadow border-0 mt-4">
+                    <div class="job_details_header">
+                        <div class="single_jobs white-bg d-flex justify-content-between">
+                            <div class="jobs_left d-flex align-items-center">
+
+                                <div class="jobs_conetent">
+                                    <a href="#">
+                                        <h4>{{$details->title}}</h4>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="jobs_right">
+                                <div class="apply_now">
+                                    <p class="appiedborder">Application Employs</p>
+
+                                </div>
+    
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="descript_wrap white-bg">
+        
+                        <table class="table">
+                            <tr>
+                                <td>Sr</td>
+                                <td>Name</td>
+                                <td>Email</td>
+                                <td>Applied Date</td>
+                            </tr>
+                            @if (!empty($jobApplications) && $jobApplications->count() > 0)
+                            @foreach ($jobApplications as $jobApplication)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $jobApplication->user->name }}</td>
+                                    <td>{{ $jobApplication->user->email }}</td>
+                                    <td>
+                                        {{ \Carbon\Carbon::parse($jobApplication->applied_date)->format('d M, Y') }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="4" class="text-center">Applicants not found</td>
+                            </tr>
+                        @endif
+                        
+                        </table>
+                    </div>
+                </div>
+                @endif
+                @endauth
             </div>
             <div class="col-md-4">
                 <div class="card shadow border-0">
