@@ -426,7 +426,7 @@ class AccountController extends Controller
         }
     }
 
-    public function updatepassword(Request $request){
+    public function updatePassword(Request $request){
         try{
             $rules = [
                 'old_password' => 'required|min:5|max:100',
@@ -462,4 +462,21 @@ class AccountController extends Controller
         }
 
     }
+
+    public function checkPassword(Request $request){
+        try{
+            
+            $validator = Validator::make($request->all(), [
+                'old_password' => 'required|min:5|max:100',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'errors' => $validator->errors(),
+                ]);
+            }
+        }catch (\Exception $e) {
+            return response()->json(['error' =>  $e->getMessage(),'line'=> $e->getLine(),'File'=> $e->getFile()], 500);
+        }
+}
 }

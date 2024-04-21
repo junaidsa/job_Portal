@@ -54,6 +54,7 @@
                             <label for="" class="mb-2">Old Password<span class="text-danger">*</span></label>
                             <input type="password" placeholder="Old Password" name="old_password" id="old_password" class="form-control">
                             <p></p>
+                            <span id="message"></span>
                         </div>
                         <div class="mb-4">
                             <label for="" class="mb-2">New Password<span class="text-danger">*</span></label>
@@ -170,6 +171,22 @@ $("#updateForm").submit(function (e) {
         }
     });
 });
+$('#old_password').change(function() {
+    var old_password = $('#old_password').val();
+    $.ajax({
+                    url: "{{ route('account.checkPassword') }}",
+                    type: 'post',
+                    data:{old_password:old_password},
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status == false) {
+                            $("#message").addClass('text-danger').text(response.message);
+                        }else{
+                            $("#message").addClass('text-success').text(response.message);
+                        }
+                    }
+                });
+    });
 
 </script>
 @endsection
