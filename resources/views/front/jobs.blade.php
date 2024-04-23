@@ -47,7 +47,7 @@
                             @if ($jobtypes->isNotEmpty())
                                 @foreach ($jobtypes as $jobtype)
                                     <div class="form-check mb-2">
-                                        <input class="form-check-input" id="job-type{{$jobtype->id}}" {{(in_array($jobtype->id,$jobTypeArray)) ? 'checked' : ''}} name="job_type" type="checkbox" value="{{$jobtype->id}}" id="job-type">
+                                        <input class="form-check-input" id="job-type{{$jobtype->id}}" name="job_type" type="checkbox" value="{{$jobtype->id}}" id="job-type">
                                         <label class="form-check-label" for="job-type{{$jobtype->id}}">{{$jobtype->name}}</label>
                                     </div>
                                 @endforeach
@@ -58,62 +58,32 @@
                             <h2>Experience</h2>
                             <select class="form-control" name="experience" id="experience">
                                 <option value="">Select a Year</option>
-                                <option value="1" {{(Request::get('experience') == 1) ? 'selected' : ''}}>1 Year</option>
-                                <option value="2" {{(Request::get('experience') == 2)  ? 'selected' : ''}}>2 Year</option>
-                                <option value="3" {{(Request::get('experience') == 3)  ? 'selected' : ''}}>3 Year</option>
-                                <option value="4" {{(Request::get('experience') == 4)  ? 'selected' : ''}}>4 Year</option>
-                                <option value="5" {{(Request::get('experience') == 5)  ? 'selected' : ''}}>5 Year</option>
-                                <option value="6" {{(Request::get('experience') == 6)  ? 'selected' : ''}}>6 Year</option>
-                                <option value="7" {{(Request::get('experience') == 7)  ? 'selected' : ''}}>7 Year</option>
-                                <option value="8" {{(Request::get('experience') == 8)  ? 'selected' : ''}}>8 Year</option>
-                                <option value="9" {{(Request::get('experience') == 9)  ? 'selected' : ''}}>9 Year</option>
-                                <option value="10" {{(Request::get('experience') == 10)  ? 'selected' : ''}}>10 Year</option>
-                                <option value="10_plus" {{(Request::get('experience') == '10_plus')}}>10+ Year</option>
+                                <option value="1">1 Year</option>
+                                <option value="2">2 Year</option>
+                                <option value="3">3 Year</option>
+                                <option value="4">4 Year</option>
+                                <option value="5">5 Year</option>
+                                <option value="6">6 Year</option>
+                                <option value="7">7 Year</option>
+                                <option value="8">8 Year</option>
+                                <option value="9">9 Year</option>
+                                <option value="10">10 Year</option>
+                                <option value="10_plus">10+ Year</option>
                             </select>
                         </div>
-                        <button type="button" id="searchButton" class="btn btn-primary">Search</button>
+                        <button type="button" id="searchButton" onclick="show_data()" class="btn btn-primary">Search</button>
                     </div>
             </form>
             </div>
             <div class="col-md-8 col-lg-9 ">
                 <div class="job_listing_area">
                     <div class="job_lists">
-                    <div class="row">
-                        @if ($findjobs->isNotEmpty())
-                                @foreach ($findjobs as $findjob)
-                                    <div class="col-md-6">
-                                        <div class="card border-0 p-3 shadow mb-4">
-                                            <div class="card-body">
-                                                <h3 class="border-0 fs-5 pb-2 mb-0">{{$findjob->title}}</h3>
-                                                <p>{!!Str::words($findjob->description,$words=10,'...')!!}</p>
-                                                <div class="bg-light p-3 border">
-                                                    <p class="mb-0">
-                                                        <span class="fw-bolder"><i class="fa fa-map-marker"></i></span>
-                                                        <span class="ps-1">{{$findjob->location}}</span>
-                                                    </p>
-                                                    <p class="mb-0">
-                                                        <span class="fw-bolder"><i class="fa fa-clock-o"></i></span>
-                                                        <span class="ps-1">{{$findjob->jobType->name}}</span>
-                                                    </p>
-                                                    @if (!is_null($findjob->salary))
-                                                    <p class="mb-0">
-                                                        <span class="fw-bolder"><i class="fa fa-usd"></i></span>
-                                                        <span class="ps-1">{{$findjob->salary}}K</span>
-                                                    </p>
-                                                    @endif
-                                                </div>
-                                                <div class="d-grid mt-3">
-                                                    <a href="{{route('jobDetails',$findjob->id)}}" class="btn btn-primary btn-lg">Details</a>
-                                                </div>
-                                            </div>
-                                        </div>
+                    <div class="row" id="jobmain">
+                                
                                     </div>
-                                @endforeach
-                            @else
-                            <div class="col-md-12">
+                       {{-- <div class="col-md-12">
                           Job not found
-                            </div>
-                        @endif
+                            </div> --}}
                     </div>
                     </div>
                 </div>
@@ -125,53 +95,76 @@
 @endsection
 @section('customJs')
 <script>
-function parseQueryString(url) {
-    var params = {};
-    var queryString = url.split('?')[1];
-    if (queryString) {
-        queryString.split('&').forEach(function (pair) {
-            pair = pair.split('=');
-            params[pair[0]] = decodeURIComponent(pair[1] || '');
-        });
-    }
-    return params;
-}
-var baseUrl = "{{ route('jobs') }}";
-var currentUrl = window.location.href;
-var parsedParams = parseQueryString(currentUrl);
-var url = new URL(baseUrl);
-Object.keys(parsedParams).forEach(function(key) {
-    url.searchParams.append(key, parsedParams[key]);
-});
-$("#searchButton").click(function(e) {
-    var params = url.searchParams;
-
+    show_data()
+	function show_data() {
     var keywords = $("#keywords").val();
     var location = $("#location").val();
     var category = $("#category").val();
     var experience = $("#experience").val();
+    var sort = $("#sort").val();
     var checkJobTypes = $("input:checkbox[name='job_type']:checked").map(function() {
-        return $(this).val();
-    }).get();
+    return $(this).val();
+}).get();
+var job_type = checkJobTypes.join(',');
+    $.ajax({
+		method:'post',
+        url: "{{ route('job.fillters') }}",
+		data:{
+            keywords:keywords,
+            location:location,
+            category:category,
+            experience:experience,
+            job_type:job_type,
+            sort:sort,
+        },
+        dataType: 'json',
+        success: function(resonse) {
+         var jobs = resonse.jobs.data;
+         var html = '';
+         for (var i = 0; i < jobs.length; i++) {
+             var job = jobs[i];
+             var shortDescription = job.description.slice(0, 100)+'...';
+             var detailsUrl = '/job/details/'+ job.id;
+    html += `<div class="col-md-6">
+                <div class="card border-0 p-3 shadow mb-4">
+                    <div class="card-body">
+                        <h3 class="border-0 fs-5 pb-2 mb-0">${job.title}</h3>
+                        <p>${shortDescription}</p>
+                        <div class="bg-light p-3 border">
+                            <p class="mb-0">
+                                <span class="fw-bolder"><i class="fa fa-map-marker"></i></span>
+                                <span class="ps-1">${job.location}</span>
+                            </p>
+                            <p class="mb-0">
+                                <span class="fw-bolder"><i class="fa fa-clock-o"></i></span>
+                                <span class="ps-1">${job.created_at}</span>
+                            </p>
+                            <p class="mb-0">
+                                <span class="fw-bolder"><i class="fa fa-usd"></i></span>
+                                <span class="ps-1">${job.salary}</span>
+                            </p>
+                        </div>
+                        <div class="d-grid mt-3">
+                            <a href="${detailsUrl}" class="btn btn-primary btn-lg">Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+}
+$('#jobmain').html(html);
+        },
+        error: function(error) {
+            alert(error.name);
+        }
 
-    if (keywords) params.set("keywords", keywords);
-    if (location) params.set("location", location);
-    if (category) params.set("category", category);
-    if (experience) params.set("experience", experience);
-    if (checkJobTypes.length > 0) params.set("job_type", checkJobTypes.join(","));
-
-    url.search = params.toString();
-    window.location.href = url.toString();
-});
-
+    });
+}
 $("#sort").change(function() {
     var sort = $("#sort").val();
     if (sort) {
-        url.searchParams.set("sort", sort);
-    } else {
-        url.searchParams.delete("sort");
+        show_data()
     }
-    window.location.href = url.toString();
 });
+
 </script>
 @endsection

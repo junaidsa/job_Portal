@@ -26,12 +26,6 @@ class JobController extends Controller
     public function index(Request $request)
     {
     try {
-            $categories = Category::where('status',1)
-            ->orderBy('name', 'ASC')
-             ->get();
-            $jobtypes = JobType::where('status',1)
-            ->orderBy('name', 'ASC')
-            ->get();
             $findjobs = Job::withoutGlobalScope(AuthScope::class)
             ->where('status',1);
             if(!empty($request->keywords))
@@ -67,15 +61,28 @@ class JobController extends Controller
                 $findjobs = $findjobs->orderBy('created_at', 'ASC');
             }
             $findjobs = $findjobs->paginate(6);
-            return view('front.jobs',[
-                'categories' => $categories,
-                'jobtypes' => $jobtypes,
-                'findjobs' => $findjobs,
-                'jobTypeArray' => $jobTypeArray,
+            return response()->json([
+                'status' => true,
+                'jobs' => $findjobs, // Include the jobs data in the response
+                'success' => 'Jobs successfully fetched'
             ]);
       }catch (\Exception $e) {
         return response()->json(['error' =>  $e->getMessage(),'line'=> $e->getLine(),'File'=> $e->getFile()], 500);
     }
+}
+
+
+public function findJobsview() {
+    $categories = Category::where('status',1)
+    ->orderBy('name', 'ASC')
+     ->get();
+    $jobtypes = JobType::where('status',1)
+    ->orderBy('name', 'ASC')
+    ->get();
+    return view('front.jobs',[
+        'categories' => $categories,
+        'jobtypes' => $jobtypes,
+    ]);
 }
 
     public function details($id){
