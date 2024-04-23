@@ -10042,3 +10042,6 @@ footer .nav-link {
   border-bottom: 2px solid #A8DF8E;
   padding-bottom: 5px;
 }
+.trumbowyg-editor ul li{
+  list-style: disc !important; 
+}

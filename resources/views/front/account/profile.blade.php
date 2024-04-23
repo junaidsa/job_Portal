@@ -22,6 +22,7 @@
                     <div class="card-body  p-4">
                         <h3 class="fs-4 mb-1">My Profile</h3>
                         <form action=""  id="updateForm" name="updateForm">
+                            @csrf
                         <div class="mb-4">
                             <label for="" class="mb-2">Name<span class="text-danger">*</span></label>
                             <input type="text" name="name" id="name" placeholder="Enter Name" class="form-control" value="{{$user->name}}">
@@ -47,6 +48,7 @@
                     </div>
                 </div>
                 <form action="" method="POST" id="changePasswordFroum" name="changePasswordFroum">
+                    @csrf
                 <div class="card border-0 shadow mb-4">
                     <div class="card-body p-4">
                         <h3 class="fs-4 mb-1">Change Password</h3>

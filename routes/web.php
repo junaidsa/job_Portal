@@ -17,10 +17,11 @@ use App\Http\Controllers\JobController;
 */
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/jobs', [JobController::class, 'index'])->name('jobs');
+Route::get('/jobs', [JobController::class, 'findJobsview'])->name('jobs');
 Route::get('/job/details/{id}', [JobController::class, 'details'])->name('jobDetails');
 Route::post('/apply-job', [JobController::class, 'applyJob'])->name('applyJob');
 Route::post('/save-job', [JobController::class, 'savejob'])->name('savejob');
+Route::post('/job-fillter', [JobController::class, 'index'])->name('job.fillters');
 Route::prefix('account')->group(function () {
     // Guest Router
     Route::group(['middleware' => 'guest'], function () {

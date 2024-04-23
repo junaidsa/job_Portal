@@ -19,6 +19,7 @@
                 <div class="col-lg-9">
                     @include('front.message')
                     <form method="post" id="createjobForm">
+                        @csrf
                         <div class="card border-0 shadow mb-4 ">
                             <div class="card-body card-form p-4">
                                 <h3 class="fs-4 mb-1">Job Details</h3>
@@ -79,19 +80,20 @@
                                         <p></p>
                                     </div>
                                 </div>
+                                {{-- https://cdnjs.com/libraries/Trumbowyg/2.27.3 --}}
                                 <div class="mb-4">
                                     <label for="" class="mb-2">Description<span class="req">*</span></label>
-                                    <textarea class="form-control" name="description" id="description" cols="5" rows="5"
+                                    <textarea class="textarea" name="description" id="description" cols="5" rows="5"
                                         placeholder="Description"></textarea>
                                     <p></p>
                                 </div>
                                 <div class="mb-4">
                                     <label for="" class="mb-2">Benefits</label>
-                                    <textarea class="form-control" name="benefits" id="benefits" cols="5" rows="5" placeholder="Benefits"></textarea>
+                                    <textarea class="textarea" name="benefits" id="benefits" cols="5" rows="5" placeholder="Benefits"></textarea>
                                 </div>
                                 <div class="mb-4">
                                     <label for="" class="mb-2">Responsibility</label>
-                                    <textarea class="form-control" name="responsibility" id="responsibility" cols="5" rows="5"
+                                    <textarea class="textarea" name="responsibility" id="responsibility" cols="5" rows="5"
                                         placeholder="Responsibility"></textarea>
                                 </div>
                                 <div class="mb-4">
@@ -176,8 +178,8 @@
                     data: $("#createjobForm").serializeArray(),
                     success: function(response) {
                         $("button[type=submit]").prop('disabled', false);
-                        $("#loader").show();
-                        $("#originalBtn").hide();
+                        $("#loader").hide();
+                        $("#originalBtn").show();
                         // Your request
                         if (response.status == true) {
                             $("#title").removeClass('is-invalid').siblings('p').removeClass(
@@ -195,7 +197,11 @@
                             window.location.href = "/account/my-jobs";
                         } else {
                             var errors = response.errors;
+                            
                             if (errors.title) {
+                                setTimeout(function() {
+                                    $("#title").focus(); 
+                                        }, 100); 
                                 $("#title").addClass('is-invalid').siblings('p').addClass(
                                     'invalid-feedback').html(errors.title);
                             } else {
@@ -204,6 +210,9 @@
                             }
 
                             if (errors.description) {
+                                setTimeout(function() {
+                                    $("#description").focus(); 
+                                        }, 100);
                                 $("#description").addClass('is-invalid').siblings('p').addClass(
                                     'invalid-feedback').html(errors.description);
                             } else {
@@ -212,14 +221,19 @@
                             }
 
                             if (errors.vacancy) {
+                                setTimeout(function() {
+                                    $("#vacancy").focus(); 
+                                        }, 100);
                                 $("#vacancy").addClass('is-invalid').siblings('p').addClass(
                                     'invalid-feedback').html(errors.vacancy);
                             } else {
                                 $("#vacancy").removeClass('is-invalid').siblings('p').removeClass(
                                     'invalid-feedback').html('');
                             }
-
                             if (errors.location) {
+                                setTimeout(function() {
+                                    $('#location').focus(); 
+                                        }, 100); 
                                 $("#location").addClass('is-invalid').siblings('p').addClass(
                                     'invalid-feedback').html(errors.location);
                             } else {
@@ -227,6 +241,9 @@
                                     'invalid-feedback').html('');
                             }
                             if (errors.salary) {
+                                setTimeout(function() {
+                                    $('#salary').focus(); 
+                                        }, 100);
                                 $("#salary").addClass('is-invalid').siblings('p').addClass(
                                     'invalid-feedback').html(errors.salary);
                             } else {
@@ -235,6 +252,9 @@
                                 // window.location.href = "/account.myJobs";
                             }
                             if (errors.company_name) {
+                                setTimeout(function() {
+                                    $('#company_name').focus(); 
+                                        }, 100);
                                 $("#company_name").addClass('is-invalid').siblings('p').addClass(
                                     'invalid-feedback').html(errors.salary);
                             } else {
